@@ -1,0 +1,16 @@
+name: Test Build Environment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check system
+        run: |
+          echo "OpenPLi Spark7162 project"
+          echo "Checking build environment..."
+          uname -a
+          df -h
+          echo "Test completed!"
