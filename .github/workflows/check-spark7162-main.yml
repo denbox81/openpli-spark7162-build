@@ -7,19 +7,17 @@ jobs:
 check:
 runs-on: ubuntu-22.04
 steps:
-- name: Check OpenPLi repositories
-run: |
-echo "=== OpenPLi branches ==="
-git ls-remote --heads https://github.com/OpenPLi/openpli-oe-core.git
-echo "=== pli-extras branches ==="
-git ls-remote --heads https://github.com/PLi-metas/pli-extras.git
+- name: Check OpenPLi repository
+run: git ls-remote --heads https://github.com/OpenPLi/openpli-oe-core.git
 
-  - name: Download sources
-    run: |
-      git clone --depth 1 https://github.com/OpenPLi/openpli-oe-core.git core
-      git clone --depth 1 https://github.com/PLi-metas/pli-extras.git extras
+  - name: Check pli-extras repository
+    run: git ls-remote --heads https://github.com/PLi-metas/pli-extras.git
+
+  - name: Download OpenPLi sources
+    run: git clone --depth 1 https://github.com/OpenPLi/openpli-oe-core.git core
+
+  - name: Download pli-extras
+    run: git clone --depth 1 https://github.com/PLi-metas/pli-extras.git extras
 
   - name: Search Spark7162
-    run: |
-      echo "=== Spark7162 references ==="
-      grep -Rni "spark7162" extras core --include="*.conf" --include="*.bb" || true
+    run: grep -Rni "spark7162" extras core --include="*.conf" --include="*.bb" || true
