@@ -1,30 +1,23 @@
 name: Check Spark7162 Sources
 
 on:
-  workflow_dispatch:
+workflow_dispatch:
 
 jobs:
-  check:
-    runs-on: ubuntu-22.04
+check:
+runs-on: ubuntu-22.04
+steps:
+- name: Check historical OpenPLi branches
+run: |
+echo "=== OpenPLi branches ==="
+git ls-remote --heads https://github.com/OpenPLi/openpli-oe-core.git
 
-    steps:
-      - name: Check OpenPLi repositories
-        run: |
-          set -e
-          echo "Checking OpenPLi repository..."
-          git ls-remote --heads https://github.com/OpenPLi/openpli-oe-core.git
+      echo "=== pli-extras branches ==="
+      git ls-remote --heads https://github.com/PLi-metas/pli-extras.git
 
-          echo "Checking pli-extras repository..."
-          git ls-remote --heads https://github.com/PLi-metas/pli-extras.git
-
-      - name: Download source repositories
-        run: |
-          git clone --depth 1 https://github.com/OpenPLi/openpli-oe-core.git
-          git clone --depth 1 https://github.com/PLi-metas/pli-extras.git openpli-oe-core/pli-extras
-
-      - name: Search for Spark7162
-        run: |
-          cd openpli-oe-core
-          echo "Searching for Spark7162 configuration..."
-          grep -Rni "spark7162" pli-extras --include="*.conf" --include="*.bb" || true
-          echo "Search completed!"
+  - name: Check Spark7162 support
+    run: |
+      git clone --depth 1 -b develop https://github.com/OpenPLi/openpli-oe-core.git core || true
+      git clone --depth 1 -b develop https://github.com/PLi-metas/pli-extras.git extras || true
+      echo "=== Spark7162 references ==="
+      grep -Rni "spark7162" extras core --include="*.conf" --include="*.bb" || true
