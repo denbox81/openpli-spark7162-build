@@ -1,4 +1,4 @@
-name: Check Spark7162 Sources
+name: Check Historical OpenPLi
 
 'on':
   workflow_dispatch:
@@ -6,15 +6,27 @@ name: Check Spark7162 Sources
 jobs:
   check:
     runs-on: ubuntu-22.04
+
     steps:
-      - name: Check Taapat repository
-        run: git ls-remote --heads https://github.com/Taapat/vuplus-fulan-openpli-oe-core.git
+      - name: Download historical OpenPLi revision
+        run: |
+          git init core
+          cd core
+          git remote add origin https://github.com/OpenPLi/openpli-oe-core.git
+          git fetch --depth=1 origin ab347d9
+          git checkout FETCH_HEAD
+          git log -1 --oneline
 
-      - name: Download Taapat sources
-        run: git clone --depth 1 https://github.com/Taapat/vuplus-fulan-openpli-oe-core.git fulan
+      - name: Check historical machine configuration
+        run: |
+          find core -iname "*spark7162*" -o -iname "*fulan*"
 
-      - name: Search Spark7162 configuration
-        run: grep -Rni "spark7162" fulan --include="*.conf" --include="*.bb" || true
+      - name: Check Taapat sources
+        run: |
+          git clone --depth 1 https://github.com/Taapat/vuplus-fulan-openpli-oe-core.git fulan
+          cat fulan/Makefile
+          cat fulan/meta-fulan/conf/machine/spark7162.conf
 
-      - name: Show machine configurations
-        run: find fulan -iname "*spark*" -o -iname "*fulan*"
+      - name: Search image recipe
+        run: |
+          grep -Rni "openpli-enigma2-image" core fulan --include="*.bb" --include="Makefile" || true
