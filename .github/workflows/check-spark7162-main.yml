@@ -7,17 +7,14 @@ jobs:
   check:
     runs-on: ubuntu-22.04
     steps:
-      - name: Check OpenPLi repository
-        run: git ls-remote --heads https://github.com/OpenPLi/openpli-oe-core.git
+      - name: Check Taapat repository
+        run: git ls-remote --heads https://github.com/Taapat/vuplus-fulan-openpli-oe-core.git
 
-      - name: Check pli-extras repository
-        run: git ls-remote --heads https://github.com/PLi-metas/pli-extras.git
+      - name: Download Taapat sources
+        run: git clone --depth 1 https://github.com/Taapat/vuplus-fulan-openpli-oe-core.git fulan
 
-      - name: Download OpenPLi sources
-        run: git clone --depth 1 https://github.com/OpenPLi/openpli-oe-core.git core
+      - name: Search Spark7162 configuration
+        run: grep -Rni "spark7162" fulan --include="*.conf" --include="*.bb" || true
 
-      - name: Download pli-extras
-        run: git clone --depth 1 https://github.com/PLi-metas/pli-extras.git extras
-
-      - name: Search Spark7162
-        run: grep -Rni "spark7162" extras core --include="*.conf" --include="*.bb" || true
+      - name: Show machine configurations
+        run: find fulan -iname "*spark*" -o -iname "*fulan*"
